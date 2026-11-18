@@ -1,0 +1,248 @@
+<title>Calculus 1 Chapter 1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: sticky toolbar + one scrolling column of lecture cards, each with notes (EN/AR) and a quiz */
+:root{--bg:#f3f6fa;--surface:#fff;--ink:#14213d;--muted:#5b6b85;--line:#dbe3ee;--accent:#2457d6;--accent-soft:#e4ecff;--good:#137a4b;--good-soft:#dff5e9;--bad:#b3261e;--bad-soft:#fde8e6;--mono:'JetBrains Mono',ui-monospace,monospace;--sans:'Cairo',system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1524;--surface:#172036;--ink:#e8edf7;--muted:#98a6c0;--line:#2a3652;--accent:#7ea2ff;--accent-soft:#1f2c4d;--good:#5fd49a;--good-soft:#14342a;--bad:#ff8a80;--bad-soft:#3b1d1b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1524;--surface:#172036;--ink:#e8edf7;--muted:#98a6c0;--line:#2a3652;--accent:#7ea2ff;--accent-soft:#1f2c4d;--good:#5fd49a;--good-soft:#14342a;--bad:#ff8a80;--bad-soft:#3b1d1b;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:760px;margin:0 auto;padding-block:0 48px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line);margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding:10px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:8px}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:none;color:var(--muted);font:600 14px var(--sans);padding:6px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:var(--bg)}
+#score{font-weight:700;font-size:14px;color:var(--muted)}
+#score b{color:var(--accent)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chips a{flex:none;text-decoration:none;color:var(--ink);background:var(--accent-soft);border-radius:999px;font-size:13px;font-weight:600;padding:2px 12px}
+h1{font-size:28px;line-height:1.25;margin:22px 0 4px;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 18px}
+section{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:18px;scroll-margin-top:110px}
+section h2{margin:0 0 2px;font-size:20px;line-height:1.35;text-wrap:balance}
+section h2 small{display:block;color:var(--muted);font-weight:600;font-size:14px}
+.tag{font:500 12px var(--mono);color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
+.pt{margin:12px 0;display:grid;gap:2px}
+.en{direction:ltr;text-align:left}
+.ar{direction:rtl;text-align:right}
+.pt .ar{color:var(--muted)}
+body[data-lang=en] .ar-only,body[data-lang=en] .pt .ar,body[data-lang=en] .qq .ar{display:none}
+body[data-lang=ar] .pt .en,body[data-lang=ar] .qq .en{display:none}
+body[data-lang=ar] .pt .ar{color:var(--ink)}
+.m{font-family:var(--mono);font-size:.92em;background:var(--accent-soft);border-radius:4px;padding:0 5px;white-space:nowrap;unicode-bidi:isolate;direction:ltr;display:inline-block}
+h3{margin:20px 0 6px;font-size:15px;color:var(--accent)}
+.q{border-top:1px dashed var(--line);padding-top:12px;margin-top:12px}
+.qq .en,.qq .ar{font-weight:600}
+.opts{display:grid;gap:8px;margin-top:8px}
+.opt{font:inherit;text-align:start;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:8px 12px;cursor:pointer;direction:ltr;text-align:left}
+.opt:focus-visible,.seg button:focus-visible,.chips a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default;color:var(--ink)}
+.why{margin-top:8px;padding:8px 12px;border-radius:8px;background:var(--accent-soft);font-size:15px}
+.why .ar{direction:rtl;text-align:right}
+.reset{margin-top:14px;font:600 13px var(--sans);background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:4px 12px;cursor:pointer}
+@media(prefers-reduced-motion:no-preference){.opt{transition:background .15s,border-color .15s}}
+</style>
+
+<div class="wrap">
+ <div class="bar">
+  <div class="row">
+   <div class="seg" role="group" aria-label="Language">
+    <button id="l-both" aria-pressed="true">EN + عربي</button><button id="l-en" aria-pressed="false">EN</button><button id="l-ar" aria-pressed="false">عربي</button>
+   </div>
+   <div id="score"></div>
+  </div>
+  <nav class="chips" id="chips" aria-label="Lectures"></nav>
+ </div>
+ <h1>Calculus 1 — Chapter 1<br><span class="ar" style="font-size:22px">الفصل الأول: الدوال والنماذج</span></h1>
+ <p class="sub">Functions and Models · Lecture notes of Ms. Rania Shaqboua, Hashemite University<br><span class="ar">شرح مختصر لكل محاضرة مع ترجمة عربية وأسئلة تجريبية بتصحيح فوري</span></p>
+ <main id="main"></main>
+</div>
+
+<script>
+// {{...}} marks math so it stays left-to-right inside Arabic text
+var S=[
+{t:"Functions",a:"الدوال",
+ pts:[
+ ["A function f: A → B assigns every input in A to exactly one output in B. Domain = all inputs (x-values). Range = all outputs (y-values).","الدالة تربط كل عنصر من المجال A بعنصر واحد فقط من B. المجال (Domain) هو كل قيم x المسموحة، والمدى (Range) هو كل قيم y الناتجة."],
+ ["Vertical line test: if any vertical line cuts a graph more than once, the graph is not a function.","اختبار الخط الرأسي: إذا قطع أي خط رأسي الرسم أكثر من مرة فهو ليس دالة."],
+ ["Example: {{f(x)=x²+2x}} has table {{x=0,1,−1,2,−2 → y=0,3,−1,8,0}}; the graph is a parabola opening up.","مثال: الدالة {{f(x)=x²+2x}} قطع مكافئ مفتوح للأعلى، ونقاطه من الجدول: {{(0,0),(1,3),(−1,−1),(2,8),(−2,0)}}."]],
+ qs:[
+ {q:"Which graph is NOT a function?",qa:"أي رسم ليس دالة؟",o:["A semicircle (upper half)","A full circle","A line y = 2x+1","A parabola y = x²"],c:1,w:"A vertical line cuts a full circle twice.",wa:"الخط الرأسي يقطع الدائرة الكاملة في نقطتين."},
+ {q:"If f(1)=6, f(2)=8, f(5)=8, the range is:",qa:"إذا كانت {{f(1)=6, f(2)=8, f(5)=8}} فالمدى هو:",o:["{1,2,5}","{6,8}","{6,8,8}","{1,6}"],c:1,w:"Range = set of outputs {6,8} (repeats are listed once).",wa:"المدى هو مجموعة المخرجات {{{6,8}}} والتكرار يُكتب مرة واحدة."},
+ {q:"Range of f(x)=x²+2x:",qa:"مدى الدالة {{f(x)=x²+2x}}:",o:["[−1, ∞)","(−∞, −1]","ℝ","[0, ∞)"],c:0,w:"Vertex at x=−1, f(−1)=−1, parabola opens up.",wa:"الرأس عند {{x=−1}} وقيمته {{−1}} والقطع مفتوح للأعلى."}]},
+
+{t:"Types of Functions & Absolute Value",a:"أنواع الدوال والقيمة المطلقة",
+ pts:[
+ ["Types: polynomial, rational (poly/poly), absolute value, root, exponential, logarithmic, trigonometric, inverse trig. Polynomials need non‑negative integer powers: {{x^(1/2)+10x²+1}} and {{x^(−2)+10x}} are NOT polynomials.","الأنواع: كثيرة حدود، نسبية (كثيرة حدود ÷ كثيرة حدود)، قيمة مطلقة، جذرية، أسية، لوغاريتمية، مثلثية، ومثلثية عكسية. كثيرة الحدود أسسها أعداد صحيحة غير سالبة."],
+ ["{{|x| = x if x≥0, −x if x<0}}. Rules: {{|ab|=|a||b|}}, {{|a+b|≤|a|+|b|}}, {{|x|=a ⇒ x=±a}}.","القيمة المطلقة: {{|x|=x}} إذا {{x≥0}} و{{|x|=−x}} إذا {{x<0}}. وأهم خواصها: {{|ab|=|a||b|}} و{{|x|=a ⇒ x=±a}}."],
+ ["{{|x| ≤ a ⇒ −a ≤ x ≤ a}} (between). {{|x| ≥ a ⇒ x ≥ a or x ≤ −a}} (outside).","{{|x|≤a}} تعني {{−a≤x≤a}} (بين). و{{|x|≥a}} تعني {{x≥a}} أو {{x≤−a}} (خارج)."],
+ ["Example: {{|2x−1|<7 ⇒ −3<x<4}}. To write {{|8−2x|}} piecewise, find the breakpoint {{x=4}}: {{8−2x}} for {{x≤4}}, {{−8+2x}} for {{x>4}}.","مثال: {{|2x−1|<7}} تعطي {{x∈(−3,4)}}. ولكتابة {{|8−2x|}} كدالة متعددة التعريف نجد نقطة التحول {{x=4}}."]],
+ qs:[
+ {q:"Solve |x − 3| ≤ 2.",qa:"حل المتباينة {{|x−3|≤2}}.",o:["(1, 5)","[1, 5]","x ≤ 1 or x ≥ 5","[−5, −1]"],c:1,w:"−2 ≤ x−3 ≤ 2 ⇒ 1 ≤ x ≤ 5.",wa:"{{−2≤x−3≤2}} إذن {{1≤x≤5}}."},
+ {q:"|x| ≥ 4 means:",qa:"{{|x|≥4}} تعني:",o:["−4 ≤ x ≤ 4","x ≥ 4 or x ≤ −4","x = 4 only","x ≥ −4"],c:1,w:"Greater-than gives the two outer pieces.",wa:"الأكبر من يعطي الجزأين الخارجيين."},
+ {q:"Which is a polynomial?",qa:"أي مما يلي كثيرة حدود؟",o:["x^(−2)+10x","x^(1/2)+1","x³+5x²+10x−1","(2x+1)/(x²+1)"],c:2,w:"Only non-negative integer powers allowed (cubic).",wa:"فقط الأسس الصحيحة غير السالبة (هذه تكعيبية)."}]},
+
+{t:"Domain Rules",a:"قواعد إيجاد المجال",
+ pts:[
+ ["Polynomial and |polynomial|: domain ℝ.","كثيرة الحدود و|كثيرة الحدود|: المجال ℝ."],
+ ["Fraction: denominator ≠ 0. {{10/(x−5)}} → ℝ−{5}.","الكسر: المقام لا يساوي صفرًا. {{10/(x−5)}} → {{ℝ−{5}}}."],
+ ["Even root {{√g(x)}}: need {{g(x) ≥ 0}}. {{√(x−7)}} → [7,∞). Odd root: domain of g only.","الجذر الزوجي: يجب {{g(x)≥0}}. {{√(x−7)}} → {{[7,∞)}}. أما الجذر الفردي فمجاله هو مجال g فقط."],
+ ["Don't simplify first: {{x²/x}} has domain ℝ−{0}.","لا تبسّط قبل إيجاد المجال: {{x²/x}} مجالها {{ℝ−{0}}}."]],
+ qs:[
+ {q:"Domain of f(x) = 10/(x−5):",qa:"مجال {{f(x)=10/(x−5)}}:",o:["ℝ","ℝ − {5}","[5, ∞)","ℝ − {0}"],c:1,w:"x−5 ≠ 0.",wa:"{{x−5≠0}}."},
+ {q:"Domain of f(x) = √(x−7):",qa:"مجال {{f(x)=√(x−7)}}:",o:["(7, ∞)","[7, ∞)","(−∞, 7]","ℝ"],c:1,w:"x−7 ≥ 0 ⇒ x ≥ 7.",wa:"{{x−7≥0}}."},
+ {q:"Domain of g(x) = ∛(1/(x+5)):",qa:"مجال {{g(x)=∛(1/(x+5))}}:",o:["ℝ","(−5, ∞)","ℝ − {−5}","[−5, ∞)"],c:2,w:"Odd root: only the fraction restricts x ≠ −5.",wa:"جذر فردي، فالقيد فقط من المقام {{x≠−5}}."},
+ {q:"Domain of f(x)=x²/x:",qa:"مجال {{f(x)=x²/x}}:",o:["ℝ","ℝ − {0}","(0, ∞)","[0, ∞)"],c:1,w:"Check the domain before simplifying.",wa:"نجد المجال قبل التبسيط."}]},
+
+{t:"Range of a Function",a:"مدى الدالة",
+ pts:[
+ ["Linear and cubic: range ℝ. Parabola {{ax²+bx+c}}: vertex at {{x=−b/2a}}; range {{[f(−b/2a), ∞)}} if a>0, {{(−∞, f(−b/2a)]}} if a<0.","الخطية والتكعيبية: المدى ℝ. القطع المكافئ: الرأس عند {{x=−b/2a}}؛ المدى يبدأ من قيمة الرأس للأعلى إذا {{a>0}} وللأسفل إذا {{a<0}}."],
+ ["{{√(ax+b)}}: range [0,∞). {{−√(…)}}: (−∞,0]. Adding a constant shifts the range: {{√(2x−1)+5}} → [5,∞).","{{√(ax+b)}} مداها {{[0,∞)}}. وإذا سبقها سالب فالمدى {{(−∞,0]}}. وإضافة ثابت تزيح المدى: {{√(2x−1)+5}} → {{[5,∞)}}."],
+ ["Semicircle {{√(a−x²)}}: domain {{[−√a, √a]}}, range {{[0, √a]}}. E.g. {{√(4−x²)}}: domain [−2,2], range [0,2].","نصف الدائرة {{√(a−x²)}}: المجال {{[−√a,√a]}} والمدى {{[0,√a]}}. مثال {{√(4−x²)}}: المجال {{[−2,2]}} والمدى {{[0,2]}}."]],
+ qs:[
+ {q:"Range of f(x)=x²+6x−1:",qa:"مدى {{f(x)=x²+6x−1}}:",o:["[−10, ∞)","[−3, ∞)","(−∞, −10]","ℝ"],c:0,w:"Vertex x=−3, f(−3)=9−18−1=−10.",wa:"الرأس {{x=−3}} و{{f(−3)=−10}}."},
+ {q:"Range of f(x)=−x²+10x+2:",qa:"مدى {{f(x)=−x²+10x+2}}:",o:["[27, ∞)","(−∞, 27]","(−∞, 5]","(−∞, 2]"],c:1,w:"Vertex x=5, f(5)=−25+50+2=27, opens down.",wa:"الرأس {{x=5}} و{{f(5)=27}} والقطع مفتوح للأسفل."},
+ {q:"Range of f(x)=√(2x−1)+5:",qa:"مدى {{f(x)=√(2x−1)+5}}:",o:["[0, ∞)","[5, ∞)","(−∞, 5]","[1/2, ∞)"],c:1,w:"√ ≥ 0, so f ≥ 5.",wa:"الجذر ≥ 0 إذن {{f≥5}}."},
+ {q:"Range of f(x)=√(4−x²):",qa:"مدى {{f(x)=√(4−x²)}}:",o:["[−2, 2]","[0, 2]","[0, 4]","[−2, 0]"],c:1,w:"Upper semicircle of radius 2.",wa:"نصف دائرة علوي نصف قطرها 2."}]},
+
+{t:"Combining Functions",a:"العمليات على الدوال",
+ pts:[
+ ["{{(f±g)(x)=f(x)±g(x)}}, {{(fg)(x)=f(x)g(x)}}, {{(f/g)(x)=f(x)/g(x)}}.","الجمع والطرح والضرب والقسمة تُجرى على قيمتي الدالتين عند نفس x."],
+ ["Domain of {{f±g}} and {{fg}} = {{D_f ∩ D_g}}. For {{f/g}} also remove {{x}} where {{g(x)=0}}.","مجال الجمع والطرح والضرب هو التقاطع {{D_f ∩ D_g}}. وفي القسمة نستثني أيضًا الأصفار {{g(x)=0}}."],
+ ["Inequalities with fractions: use a sign table. {{√((x²−4)/(x−4))}} → need {{(x²−4)/(x−4) ≥ 0}} ⇒ {{[−2,2] ∪ (4,∞)}}.","للمتباينات الكسرية نستخدم جدول إشارات. {{√((x²−4)/(x−4))}} مجالها {{[−2,2] ∪ (4,∞)}}."]],
+ qs:[
+ {q:"f(x)=√x, g(x)=x−4. Domain of f/g:",qa:"{{f(x)=√x, g(x)=x−4}}. مجال {{f/g}}:",o:["[0, ∞)","[0, ∞) − {4}","ℝ − {4}","(4, ∞)"],c:1,w:"D_f ∩ D_g = [0,∞), then remove g=0 at x=4.",wa:"التقاطع {{[0,∞)}} ثم نحذف {{x=4}}."},
+ {q:"f(x)=1−√(x−2), g(x)=x−4. (f+g)(7) =",qa:"{{f(x)=1−√(x−2), g(x)=x−4}}. قيمة {{(f+g)(7)}}:",o:["4 − √5","4 + √5","3","1 − √5"],c:0,w:"f(7)=1−√5, g(7)=3 ⇒ 4−√5.",wa:"{{f(7)=1−√5}} و{{g(7)=3}}."},
+ {q:"Domain of √((x²−4)/(x−4)):",qa:"مجال {{√((x²−4)/(x−4))}}:",o:["[−2, 2]","[−2,2] ∪ (4,∞)","(−∞,−2] ∪ [2,∞)","[−2,2] ∪ [4,∞)"],c:1,w:"x=4 is excluded (zero denominator).",wa:"{{x=4}} مستثناة (مقام صفر)."}]},
+
+{t:"Composition of Functions",a:"تركيب الدوال",
+ pts:[
+ ["{{(f∘g)(x) = f(g(x))}}: g first, then f. In general {{f∘g ≠ g∘f}}.","{{(f∘g)(x)=f(g(x))}}: ننفذ g أولًا ثم f. وبشكل عام {{f∘g ≠ g∘f}}."],
+ ["Domain: {{D_{f∘g} = {x ∈ D_g and g(x) ∈ D_f}}}.","المجال: {{x}} تنتمي إلى {{D_g}} و{{g(x)}} تنتمي إلى {{D_f}}."],
+ ["Example: {{f=x²−1, g=√(3−x)}} ⇒ {{f∘g = 2−x}} (domain (−∞,3]); {{g∘f = √(4−x²)}} (domain [−2,2]).","مثال: {{f=x²−1, g=√(3−x)}} ⇒ {{f∘g=2−x}} بمجال {{(−∞,3]}}، و{{g∘f=√(4−x²)}} بمجال {{[−2,2]}}."],
+ ["Finding f from {{f(g(x))}}: let {{y=g(x)}}, solve for x, substitute. If {{f(x+1)=x²+6x+6}} then {{f(2)=13}} (put x=1).","إيجاد f: نفرض {{y=g(x)}} ونعبّر عن x ثم نعوّض. إذا {{f(x+1)=x²+6x+6}} فإن {{f(2)=13}} (نضع x=1)."]],
+ qs:[
+ {q:"f(x)=2x+1, g(x)=x². (f∘g)(3) =",qa:"{{f(x)=2x+1, g(x)=x²}}. قيمة {{(f∘g)(3)}}:",o:["49","19","7","81"],c:1,w:"g(3)=9, f(9)=19. (g∘f)(3)=49.",wa:"{{g(3)=9}} و{{f(9)=19}}."},
+ {q:"If f(x+1)=x²+6x+6, then f(2)=",qa:"إذا {{f(x+1)=x²+6x+6}} فإن {{f(2)}}:",o:["13","8","6","25"],c:0,w:"x+1=2 ⇒ x=1 ⇒ 1+6+6=13.",wa:"{{x=1}} إذن {{1+6+6=13}}."},
+ {q:"If (f∘g)(x)=3x²+3x+2 and f(x)=3x+5, then g(x)=",qa:"إذا {{(f∘g)(x)=3x²+3x+2}} و{{f(x)=3x+5}} فإن {{g(x)}}:",o:["x²+x−1","3x²+3x−3","x²+x+1","x²−x−1"],c:0,w:"3g+5=3x²+3x+2 ⇒ g=x²+x−1.",wa:"{{3g+5=3x²+3x+2}} إذن {{g=x²+x−1}}."}]},
+
+{t:"Even and Odd Functions",a:"الدوال الزوجية والفردية",
+ pts:[
+ ["Even: {{f(−x)=f(x)}}, symmetric about the y-axis ({{x², x⁴, |x|, cos x}}). Odd: {{f(−x)=−f(x)}}, symmetric about the origin ({{x, x³, sin x, tan x}}).","زوجية: {{f(−x)=f(x)}} ومتماثلة حول محور y. فردية: {{f(−x)=−f(x)}} ومتماثلة حول نقطة الأصل. وإن لم يتحقق أي شرط فهي لا زوجية ولا فردية."],
+ ["Multiplication/division: E·E=E, O·O=E, E·O=O.","الضرب والقسمة: زوجي×زوجي=زوجي، فردي×فردي=زوجي، زوجي×فردي=فردي."]],
+ qs:[
+ {q:"f(x)=x⁵+x is:",qa:"الدالة {{f(x)=x⁵+x}}:",o:["Even","Odd","Neither","Both"],c:1,w:"f(−x)=−x⁵−x=−f(x).",wa:"{{f(−x)=−f(x)}}."},
+ {q:"f(x)=2x−x² is:",qa:"الدالة {{f(x)=2x−x²}}:",o:["Even","Odd","Neither","Constant"],c:2,w:"f(−x)=−2x−x² equals neither f(x) nor −f(x).",wa:"{{f(−x)=−2x−x²}} لا تساوي {{f(x)}} ولا {{−f(x)}}."},
+ {q:"f(x)=(x⁵+x)/(1−x⁴) is:",qa:"الدالة {{f(x)=(x⁵+x)/(1−x⁴)}}:",o:["Even","Odd","Neither","Undefined"],c:1,w:"odd ÷ even = odd.",wa:"فردي ÷ زوجي = فردي."}]},
+
+{t:"One-to-One and Inverse Functions",a:"الدوال الواحد لواحد والدالة العكسية",
+ pts:[
+ ["One-to-one: {{x₁≠x₂ ⇒ f(x₁)≠f(x₂)}}. Horizontal line test: no horizontal line meets the graph twice. {{x², |x|}} fail; {{x³}} passes.","واحد لواحد: لا تأخذ الدالة نفس القيمة مرتين. اختبار الخط الأفقي: لا يقطع أي خط أفقي الرسم أكثر من مرة. {{x²}} ليست واحد لواحد و{{x³}} كذلك واحد لواحد."],
+ ["f has an inverse iff f is one-to-one. {{Domain f = Range f⁻¹}} and {{Range f = Domain f⁻¹}}. Graphs are mirror images about {{y=x}}.","للدالة عكسية إذا وفقط إذا كانت واحد لواحد. مجال f هو مدى العكسية ومدى f هو مجال العكسية، والرسمان متناظران حول {{y=x}}."],
+ ["To find {{f⁻¹}}: write {{y=f(x)}}, solve for x, swap. {{f=5x³+7 ⇒ f⁻¹=∛((x−7)/5)}}. {{f=(3x+5)/(2x−1) ⇒ f⁻¹=(x+5)/(2x−3)}}, so Range f = ℝ−{3/2}.","لإيجاد العكسية: نكتب {{y=f(x)}} ونحل لـ x ثم نبدل. مثال: {{f=(3x+5)/(2x−1)}} عكسيتها {{(x+5)/(2x−3)}} فمدى f هو {{ℝ−{3/2}}}."],
+ ["Restrict the domain to invert: {{f=x², x≤0 ⇒ f⁻¹=−√x}}. And {{f⁻¹(4)}} means solve {{f(x)=4}}: for {{x³+5x−2}} the answer is 1.","نقيّد المجال لنحصل على عكسية: {{f=x², x≤0}} عكسيتها {{−√x}}. وإيجاد {{f⁻¹(4)}} يعني حل {{f(x)=4}}، ففي {{x³+5x−2}} الجواب 1."],
+ ["{{f∘f⁻¹(x)=x}} and {{f⁻¹∘f(x)=x}}: use this to test whether two functions are inverses.","{{f∘f⁻¹(x)=x}} و{{f⁻¹∘f(x)=x}}: نستخدمها للتحقق أن دالتين عكسيتان."]],
+ qs:[
+ {q:"Which is one-to-one?",qa:"أي دالة واحد لواحد؟",o:["x²","|x|","x³","x⁴"],c:2,w:"Only x³ passes the horizontal line test.",wa:"فقط {{x³}} تجتاز اختبار الخط الأفقي."},
+ {q:"Inverse of f(x)=5x³+7:",qa:"عكسية {{f(x)=5x³+7}}:",o:["∛((x−7)/5)","∛(5x−7)","(x−7)/5","∛(x/5)−7"],c:0,w:"y−7=5x³ ⇒ x=∛((y−7)/5).",wa:"{{y−7=5x³}} إذن {{x=∛((y−7)/5)}}."},
+ {q:"f(x)=x², x ≤ 0. f⁻¹(x)=",qa:"{{f(x)=x², x≤0}}. العكسية {{f⁻¹(x)}}:",o:["√x","−√x","x²","1/x²"],c:1,w:"x is negative, so x=−√y.",wa:"x سالبة إذن {{x=−√y}}."},
+ {q:"f(x)=x³+5x−2. f⁻¹(4)=",qa:"{{f(x)=x³+5x−2}}. قيمة {{f⁻¹(4)}}:",o:["1","2","4","−1"],c:0,w:"Solve x³+5x−6=0 ⇒ x=1.",wa:"{{x³+5x−6=0}} إذن {{x=1}}."}]},
+
+{t:"Exponential Functions",a:"الدوال الأسية",
+ pts:[
+ ["{{f(x)=bˣ}}, {{b>0, b≠1}}. Domain ℝ, range (0,∞). Passes through (0,1). Grows if b>1, decays if 0<b<1. Natural base {{e ≈ 2.718}}.","{{f(x)=bˣ}} حيث {{b>0, b≠1}}. المجال ℝ والمدى {{(0,∞)}} وتمر بالنقطة {{(0,1)}}. تتزايد إذا {{b>1}} وتتناقص إذا {{0<b<1}}."],
+ ["Laws: {{aˣaʸ=aˣ⁺ʸ}}, {{(aˣ)ʸ=aˣʸ}}, {{aˣ/aʸ=aˣ⁻ʸ}}, {{a⁻ˣ=1/aˣ}}, {{a⁰=1}}, {{(ab)ˣ=aˣbˣ}}.","قوانين الأسس: {{aˣaʸ=aˣ⁺ʸ}} و{{(aˣ)ʸ=aˣʸ}} و{{aˣ/aʸ=aˣ⁻ʸ}} و{{a⁻ˣ=1/aˣ}} و{{a⁰=1}}."],
+ ["Remember {{eˣ>0}} always, so {{eˣ=−3}} has no solution. Domain examples: {{√(1−2ˣ)}} → {{(−∞,0]}}; {{1/(eˣ−e²ˣ)}} → {{ℝ−{0}}}.","تذكّر أن {{eˣ>0}} دائمًا فالمعادلة {{eˣ=−3}} لا حل لها. أمثلة المجال: {{√(1−2ˣ)}} → {{(−∞,0]}}."]],
+ qs:[
+ {q:"Range of f(x)=3ˣ:",qa:"مدى {{f(x)=3ˣ}}:",o:["ℝ","[0, ∞)","(0, ∞)","(1, ∞)"],c:2,w:"Always positive, never 0.",wa:"موجبة دائمًا ولا تساوي صفرًا."},
+ {q:"Domain of f(x)=√(1−2ˣ):",qa:"مجال {{f(x)=√(1−2ˣ)}}:",o:["[0, ∞)","(−∞, 0]","(−∞, 1]","ℝ"],c:1,w:"1−2ˣ ≥ 0 ⇒ 2ˣ ≤ 1 ⇒ x ≤ 0.",wa:"{{2ˣ≤1}} إذن {{x≤0}}."},
+ {q:"f(x)=(1/2)ˣ is:",qa:"الدالة {{f(x)=(1/2)ˣ}}:",o:["Increasing","Decreasing","Constant","Even"],c:1,w:"Base between 0 and 1 ⇒ decay.",wa:"الأساس بين 0 و1 فهي تناقصية."}]},
+
+{t:"Logarithmic Functions",a:"الدوال اللوغاريتمية",
+ pts:[
+ ["{{logᵦx = y ⇔ bʸ = x}}. Domain (0,∞), range ℝ. {{logᵦb=1}}, {{logᵦ1=0}}. {{log x}} means base 10; {{ln x}} base e.","{{logᵦx=y}} تعني {{bʸ=x}}. المجال {{(0,∞)}} والمدى ℝ. {{logᵦb=1}} و{{logᵦ1=0}}."],
+ ["Laws: {{log(ac)=log a+log c}}, {{log(a/c)=log a−log c}}, {{log aʳ=r log a}}, change of base {{logᵦa = ln a / ln b}}.","القوانين: لوغاريتم الضرب = مجموع، والقسمة = فرق، والأس ينزل كمعامل، وتغيير الأساس {{logᵦa=ln a/ln b}}."],
+ ["{{bˣ}} and {{logᵦx}} are inverses: {{b^(logᵦx)=x}}, {{logᵦ(bˣ)=x}}, {{eˡⁿˣ=x}}, {{ln eˣ=x}}.","{{bˣ}} و{{logᵦx}} عكسيتان: {{b^(logᵦx)=x}} و{{logᵦ(bˣ)=x}}."],
+ ["Domain: the log's inside must be > 0. {{ln(ln x)}} → {{(1,∞)}}. {{log₇((4x−2)/(2+x))}} → {{(−∞,−2) ∪ (1/2,∞)}}.","المجال: ما داخل اللوغاريتم يجب أن يكون {{>0}}. {{ln(ln x)}} مجالها {{(1,∞)}}."]],
+ qs:[
+ {q:"log₁₀₀₀ 100 =",qa:"قيمة {{log₁₀₀₀ 100}}:",o:["2/3","3/2","10","1/10"],c:0,w:"log100/log1000 = 2/3.",wa:"{{log100/log1000=2/3}}."},
+ {q:"e^(−2 ln 5) =",qa:"قيمة {{e^(−2 ln 5)}}:",o:["25","−10","1/25","1/10"],c:2,w:"= e^(ln 5⁻²) = 5⁻² = 1/25.",wa:"{{=5⁻²=1/25}}."},
+ {q:"Domain of f(x)=ln(ln x):",qa:"مجال {{f(x)=ln(ln x)}}:",o:["(0, ∞)","(1, ∞)","[1, ∞)","(e, ∞)"],c:1,w:"x>0 and ln x>0 ⇒ x>1.",wa:"{{x>0}} و{{ln x>0}} إذن {{x>1}}."},
+ {q:"Inverse of g(x)=log₇ x:",qa:"عكسية {{g(x)=log₇ x}}:",o:["7ˣ","xʷ⁷","log_x 7","1/log₇x"],c:0,w:"Log and exponential with the same base are inverses.",wa:"اللوغاريتم والأسية بنفس الأساس عكسيتان."}]},
+
+{t:"Solving Exponential & Log Equations",a:"حل المعادلات الأسية واللوغاريتمية",
+ pts:[
+ ["Take log (or exponentiate) both sides. {{2^(x−5)=3 ⇒ x = log₂3 + 5}}. {{ln(x+1)=5 ⇒ x = e⁵−1}}.","نأخذ اللوغاريتم أو الأسية لطرفي المعادلة. {{2^(x−5)=3}} تعطي {{x=log₂3+5}}، و{{ln(x+1)=5}} تعطي {{x=e⁵−1}}."],
+ ["Quadratic form: {{e²ˣ−eˣ=6}}: let {{y=eˣ}}, {{y²−y−6=0}}, {{y=3}} (reject −2) ⇒ {{x=ln 3}}.","الصيغة التربيعية: نفرض {{y=eˣ}} فتصبح {{y²−y−6=0}} و{{y=3}} (نهمل −2) إذن {{x=ln3}}."],
+ ["{{log x²+log x=30}} ⇒ {{3 log x=30}} ⇒ {{x=10¹⁰}}. ALWAYS check answers in the original equation (log needs positive input, base ≠ 1).","{{log x²+log x=30}} تعطي {{x=10¹⁰}}. تحقق دائمًا من الحلول في المعادلة الأصلية: داخل اللوغاريتم موجب والأساس ≠ 1."]],
+ qs:[
+ {q:"Solve ln(x+1)=5:",qa:"حل {{ln(x+1)=5}}:",o:["e⁵","e⁵ − 1","5 − 1","ln 6"],c:1,w:"x+1=e⁵.",wa:"{{x+1=e⁵}}."},
+ {q:"Solve e²ˣ − eˣ = 6:",qa:"حل {{e²ˣ−eˣ=6}}:",o:["x = ln 3","x = ln 3 or ln(−2)","x = 3","x = ln 6"],c:0,w:"eˣ=3 (eˣ=−2 impossible).",wa:"{{eˣ=3}} و{{eˣ=−2}} مستحيلة."},
+ {q:"Solve log₂(3x) + log₄(9x²) = 4:",qa:"حل {{log₂(3x)+log₄(9x²)=4}}:",o:["4/3 only","±4/3","16/9","3/4"],c:0,w:"It becomes log₂(3x)²=4 ⇒ 3x=4; −4/3 is rejected (log of negative).",wa:"تصبح {{2log₂(3x)=4}} إذن {{3x=4}}، ويُرفض {{−4/3}}."}]},
+
+{t:"Trigonometric Functions",a:"الدوال المثلثية",
+ pts:[
+ ["{{sin=opp/hyp, cos=adj/hyp, tan=sin/cos}}. Key values: {{sin30°=1/2, sin45°=1/√2, sin60°=√3/2}}; cos is reversed.","{{sin=المقابل/الوتر، cos=المجاور/الوتر، tan=sin/cos}}. القيم المهمة: {{sin30°=1/2, sin45°=1/√2, sin60°=√3/2}} وcos بالعكس."],
+ ["sin, cos: domain ℝ, range [−1,1]. sin is odd, cos is even, tan is odd (domain ℝ−{π/2+nπ}).","sin وcos: المجال ℝ والمدى {{[−1,1]}}. sin فردية وcos زوجية وtan فردية."],
+ ["Identities: {{sin²+cos²=1}}, {{sin2x=2sinx cosx}}, {{cos2x=cos²x−sin²x}}.","المتطابقات: {{sin²x+cos²x=1}} و{{sin2x=2sinx cosx}}."],
+ ["Reference angle: Q2 {{θ=π−β}}, Q3 {{θ=β−π}}, Q4 {{θ=2π−β}}. Then fix the sign by quadrant. {{sin(5π/6)=1/2}}, {{cos(4π/3)=−1/2}}.","الزاوية المرجعية: ربع ثانٍ {{π−β}}، ثالث {{β−π}}، رابع {{2π−β}} ثم نحدد الإشارة حسب الربع."],
+ ["Range tricks: bound {{cos x}} between −1 and 1, then apply the operations. {{3/(5+cos x)}} → {{[1/2, 3/4]}}; {{2sin²x+3}} → {{[3,5]}}; {{3+|cos x|}} → {{[3,4]}}.","حيل المدى: نبدأ من {{−1≤cos x≤1}} ثم نطبق العمليات على الأطراف."]],
+ qs:[
+ {q:"sin(5π/6) =",qa:"قيمة {{sin(5π/6)}}:",o:["1/2","−1/2","√3/2","−√3/2"],c:0,w:"150° in Q2, reference π/6, sin positive.",wa:"150° في الربع الثاني، المرجعية {{π/6}} وsin موجبة."},
+ {q:"cos(4π/3) =",qa:"قيمة {{cos(4π/3)}}:",o:["1/2","−1/2","−√3/2","√3/2"],c:1,w:"240° in Q3, reference π/3, cos negative.",wa:"240° في الربع الثالث وcos سالبة."},
+ {q:"sin(7π/4) =",qa:"قيمة {{sin(7π/4)}}:",o:["1/√2","−1/√2","−1/2","0"],c:1,w:"Q4, reference π/4, sin negative.",wa:"ربع رابع وsin سالبة."},
+ {q:"Range of f(x)=2sin²x+3:",qa:"مدى {{f(x)=2sin²x+3}}:",o:["[1, 5]","[3, 5]","[3, 4]","[0, 5]"],c:1,w:"0 ≤ sin² ≤ 1 ⇒ 3 ≤ f ≤ 5.",wa:"{{0≤sin²x≤1}} إذن {{3≤f≤5}}."}]},
+
+{t:"Inverse Trigonometric Functions",a:"الدوال المثلثية العكسية",
+ pts:[
+ ["{{sin⁻¹}}: domain [−1,1], range [−π/2, π/2], odd. {{cos⁻¹}}: domain [−1,1], range [0, π], and {{cos⁻¹(−x)=π−cos⁻¹x}}. {{tan⁻¹}}: domain ℝ, range (−π/2, π/2), odd.","{{sin⁻¹}}: مجال {{[−1,1]}} ومدى {{[−π/2,π/2]}}. {{cos⁻¹}}: مدى {{[0,π]}}. {{tan⁻¹}}: مجال ℝ ومدى {{(−π/2,π/2)}}."],
+ ["Values: {{sin⁻¹(1/2)=π/6}}, {{cos⁻¹(−1/2)=2π/3}}, {{tan⁻¹(−1)=−π/4}}.","قيم: {{sin⁻¹(1/2)=π/6}} و{{cos⁻¹(−1/2)=2π/3}} و{{tan⁻¹(−1)=−π/4}}."],
+ ["Cancellation works only inside the principal range. {{sin⁻¹(sin 2π/3)=π/3}} (not 2π/3). {{tan⁻¹(tan 2π/3)=−π/3}}.","الاختصار يصح فقط داخل المدى الرئيسي. {{sin⁻¹(sin 2π/3)=π/3}} وليس {{2π/3}}."],
+ ["Triangle method: {{cos(tan⁻¹x)}}: draw a triangle with opposite x, adjacent 1, hypotenuse {{√(x²+1)}} ⇒ {{1/√(x²+1)}}.","طريقة المثلث: {{cos(tan⁻¹x)}} نرسم مثلثًا فيه المقابل x والمجاور 1 والوتر {{√(x²+1)}} فالناتج {{1/√(x²+1)}}."]],
+ qs:[
+ {q:"cos⁻¹(−1/2) =",qa:"قيمة {{cos⁻¹(−1/2)}}:",o:["−π/3","π/3","2π/3","4π/3"],c:2,w:"π − π/3 = 2π/3, inside [0, π].",wa:"{{π−π/3=2π/3}} داخل {{[0,π]}}."},
+ {q:"sin⁻¹(sin(2π/3)) =",qa:"قيمة {{sin⁻¹(sin(2π/3))}}:",o:["2π/3","π/3","−π/3","π/6"],c:1,w:"2π/3 is outside [−π/2, π/2]; same sine as π/3.",wa:"{{2π/3}} خارج المدى الرئيسي ولها نفس جيب {{π/3}}."},
+ {q:"Domain of sin⁻¹(2x+1):",qa:"مجال {{sin⁻¹(2x+1)}}:",o:["[−1, 1]","[−1, 0]","[0, 1]","[−2, 0]"],c:1,w:"−1 ≤ 2x+1 ≤ 1 ⇒ −1 ≤ x ≤ 0.",wa:"{{−1≤2x+1≤1}} إذن {{−1≤x≤0}}."},
+ {q:"Range of π + |tan⁻¹x|:",qa:"مدى {{π+|tan⁻¹x|}}:",o:["[π, 3π/2)","[π, 3π/2]","(π/2, π]","[0, π/2)"],c:0,w:"0 ≤ |tan⁻¹x| < π/2, add π.",wa:"{{0≤|tan⁻¹x|<π/2}} ثم نضيف {{π}}."}]}
+];
+
+var $=function(s){return document.querySelector(s)},main=$("#main"),chips=$("#chips");
+function f(s){return s.replace(/\{\{(.+?)\}\}(?!\})/g,'<span class="m">$1</span>')}
+var done={},total=0;S.forEach(function(x){total+=x.qs.length});
+var ok=0,tried=0;
+function upd(){$("#score").innerHTML="<b>"+ok+"</b> / "+total+" ✓ · "+tried+" answered"}
+S.forEach(function(x,i){
+ var id="s"+(i+1),a=document.createElement("a");a.href="#"+id;a.textContent=(i+1)+". "+x.t.split(" ")[0];chips.appendChild(a);
+ var h='<section id="'+id+'"><div class="tag">Lecture '+(i+1)+'</div><h2>'+x.t+'<small class="ar">'+x.a+'</small></h2><h3>Notes · الشرح</h3>';
+ x.pts.forEach(function(p){h+='<div class="pt"><div class="en">'+f(p[0])+'</div><div class="ar">'+f(p[1])+'</div></div>'});
+ h+='<h3>Quiz · أسئلة</h3>';
+ x.qs.forEach(function(q,j){
+  h+='<div class="q" data-s="'+i+'" data-q="'+j+'"><div class="qq"><div class="en">'+(j+1)+'. '+f(q.q)+'</div><div class="ar">'+f(q.qa)+'</div></div><div class="opts">';
+  q.o.forEach(function(o,k){h+='<button class="opt" data-k="'+k+'">'+f(o)+'</button>'});
+  h+='</div><div class="why" hidden></div></div>';
+ });
+ h+='<button class="reset" data-reset="'+i+'">Reset quiz · إعادة</button></section>';
+ main.insertAdjacentHTML("beforeend",h);
+});
+// Math-ish option text is plain; wrap nothing extra.
+main.addEventListener("click",function(e){
+ var r=e.target.closest("[data-reset]");
+ if(r){var sec=r.closest("section");sec.querySelectorAll(".q").forEach(function(q){var key=q.dataset.s+"-"+q.dataset.q;if(done[key]!==undefined){tried--;if(done[key])ok--;delete done[key]}
+  q.querySelectorAll(".opt").forEach(function(b){b.disabled=false;b.className="opt"});q.querySelector(".why").hidden=true});upd();return}
+ var b=e.target.closest(".opt");if(!b||b.disabled)return;
+ var q=b.closest(".q"),d=S[q.dataset.s].qs[q.dataset.q],k=+b.dataset.k,key=q.dataset.s+"-"+q.dataset.q;
+ q.querySelectorAll(".opt").forEach(function(o,i){o.disabled=true;if(i===d.c)o.classList.add("right")});
+ if(k!==d.c)b.classList.add("wrong");
+ done[key]=(k===d.c);tried++;if(k===d.c)ok++;
+ var w=q.querySelector(".why");w.hidden=false;
+ w.innerHTML=(k===d.c?"✓ ":"✗ ")+'<span class="en">'+f(d.w)+'</span><div class="ar">'+f(d.wa)+'</div>';
+ upd();
+});
+function lang(m){document.body.dataset.lang=m;["both","en","ar"].forEach(function(x){$("#l-"+x).setAttribute("aria-pressed",x===m)});try{localStorage.setItem("c1lang",m)}catch(e){}}
+["both","en","ar"].forEach(function(x){$("#l-"+x).onclick=function(){lang(x)}});
+var sv="both";try{sv=localStorage.getItem("c1lang")||"both"}catch(e){}lang(sv);upd();
+</script>
